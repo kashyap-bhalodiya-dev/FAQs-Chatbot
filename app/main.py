@@ -4,7 +4,8 @@ import shutil
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from pydantic import BaseModel
 
-from app.qa_service import ingest_document, answer_question, reset_vector_store
+from app.qa_service import ingest_document, answer_question, reset_vector_store, answer_question_with_llm
+from app.config import UPLOAD_DIR, DEFAULT_TOP_K
 
 
 app = FastAPI(
@@ -12,14 +13,9 @@ app = FastAPI(
     description="Upload documents and ask questions using FAISS-based semantic search.",
     version="1.0.0"
 )
-
-
-UPLOAD_DIR = "uploaded_docs"
-
-
 class QueryRequest(BaseModel):
     question: str
-    top_k: int = 3
+    top_k: int = DEFAULT_TOP_K
 
 
 @app.get("/")
@@ -49,6 +45,19 @@ def upload_document(file: UploadFile = File(...)):
             shutil.copyfileobj(file.file, buffer)
 
         result = ingest_document(file_path)
+
+        return result
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/ask")
+def query_document(request: QueryRequest):
+    try:
+        result = answer_question_with_llm(
+            question=request.question,
+            top_k=request.top_k
+        )
 
         return result
 
