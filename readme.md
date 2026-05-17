@@ -36,9 +36,62 @@ Loads FAQ documents, breaks them into chunks, generates embeddings, and allows y
    pip install -r requirements.txt
    ```
 
-## Running the Test Pipeline
+## Running the API Server
 
-To test the whole pipeline (load document → chunk → embed → search):
+Start the FastAPI server with auto-reload:
+
+```
+uvicorn app.main:app --reload
+```
+
+Server runs on `http://localhost:8000`
+
+API docs available at `http://localhost:8000/docs`
+
+## API Endpoints
+
+### 1. Home
+```
+GET /
+```
+Health check endpoint.
+
+### 2. Upload Document
+```
+POST /upload
+```
+Upload a `.pdf` or `.txt` file to process and store in the vector database.
+
+**Example:**
+```bash
+curl -X POST "http://localhost:8000/upload" \
+  -F "file=@your_document.txt"
+```
+
+### 3. Query
+```
+POST /query
+```
+Ask a question and get relevant answers from stored documents.
+
+**Body:**
+```json
+{
+  "question": "How many vacation days do employees get?",
+  "top_k": 3
+}
+```
+
+**Example:**
+```bash
+curl -X POST "http://localhost:8000/query" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "How many vacation days?", "top_k": 3}'
+```
+
+## Testing
+
+To test the whole pipeline manually (load document → chunk → embed → search):
 
 ```
 python test_pipeline.py
@@ -56,12 +109,14 @@ This will:
 ```
 FAQs-Chatbot/
 ├── app/
+│   ├── main.py               # FastAPI application & endpoints
+│   ├── qa_service.py         # Document ingestion & querying logic
 │   ├── document_loader.py    # Load PDF/TXT files
 │   ├── chunker.py            # Split text into chunks
 │   ├── embedder.py           # Generate embeddings
-│   ├── vector_store.py       # FAISS vector store
-├── uploaded_docs/            # Sample documents
-├── test_pipeline.py          # Test the full pipeline
+│   └── vector_store.py       # FAISS vector store
+├── uploaded_docs/            # Storage for uploaded documents
+├── test_pipeline.py          # Standalone pipeline test
 ├── requirements.txt          # Dependencies
 └── readme.md                 # This file
 ```
