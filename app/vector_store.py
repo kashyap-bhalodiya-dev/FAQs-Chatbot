@@ -7,7 +7,7 @@ class VectorStore:
     def __init__(self, dimension: int):
 
         self.dimension = dimension
-        self.index = faiss.IndexFlatL2(dimension)
+        self.index = faiss.IndexFlatIP(dimension)
         self.metadata = []
 
     def add_embeddings(self, embeddings: np.ndarray, metadata: list[dict]):
@@ -21,13 +21,13 @@ class VectorStore:
 
         results = []
 
-        for distance, index in zip(distances[0], indices[0]):
+        for score, index in zip(distances[0], indices[0]):
             item = self.metadata[index]
             result = {
                 "text": item["text"],
                 "file_name": item["file_name"],
                 "chunk_id": item["chunk_id"],
-                "distance": float(distance),
+                "score": float(score),
                 "index": int(index)
             }
 

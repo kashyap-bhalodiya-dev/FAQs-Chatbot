@@ -4,7 +4,7 @@ A simple semantic search system for finding answers in FAQ documents. Uses embed
 
 ## What does it do?
 
-Loads FAQ documents, breaks them into chunks, generates embeddings, and allows you to search for relevant answers based on queries. Currently supports `.txt` and `.pdf` files.
+Loads FAQ documents, breaks them into sentence-based chunks, generates embeddings, and allows you to search for relevant answers based on queries. Sentence boundaries are detected using `.`, `!`, and `?`, so chunking respects natural sentence breaks. Currently supports `.txt` and `.pdf` files.
 
 ## Setup
 
@@ -56,7 +56,18 @@ GET /
 ```
 Health check endpoint.
 
-### 2. Upload Document
+### 2. Reset Index
+```
+POST /reset
+```
+Reset the current in-memory FAISS index and clear all ingested documents from the current session.
+
+**Example:**
+```bash
+curl -X POST "http://localhost:8000/reset"
+```
+
+### 3. Upload Document
 ```
 POST /upload
 ```
@@ -68,7 +79,7 @@ curl -X POST "http://localhost:8000/upload" \
   -F "file=@your_document.txt"
 ```
 
-### 3. Query
+### 4. Query
 ```
 POST /query
 ```
@@ -99,7 +110,7 @@ python test_pipeline.py
 
 This will:
 - Load the sample FAQ document
-- Split it into chunks
+- Split it into sentence-based chunks
 - Generate embeddings
 - Store them in the vector database
 - Run a sample query and show search results
@@ -118,6 +129,5 @@ FAQs-Chatbot/
 ├── uploaded_docs/            # Storage for uploaded documents
 ├── test_pipeline.py          # Standalone pipeline test
 ├── requirements.txt          # Dependencies
-└── readme.md                 # This file
 ```
 

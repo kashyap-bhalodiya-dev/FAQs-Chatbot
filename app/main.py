@@ -4,7 +4,7 @@ import shutil
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from pydantic import BaseModel
 
-from app.qa_service import ingest_document, answer_question
+from app.qa_service import ingest_document, answer_question, reset_vector_store
 
 
 app = FastAPI(
@@ -27,6 +27,15 @@ def home():
     return {
         "message": "Multi-Document Semantic Search API is running"
     }
+
+@app.post("/reset")
+def reset_index():
+    try:
+        result = reset_vector_store()
+        return result
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/upload")

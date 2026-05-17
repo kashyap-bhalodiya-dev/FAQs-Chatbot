@@ -10,15 +10,12 @@ vector_store = None
 
 
 def ingest_document(file_path: str):
-    """
-    Process a document and store its chunks in FAISS.
-    """
 
     global vector_store
 
     text = load_document(file_path)
 
-    chunks = chunk_text(text, chunk_size=100, overlap=20)
+    chunks = chunk_text(text, chunk_size=50, overlap=1)
 
     if not chunks:
         raise ValueError("No text chunks were created from this document.")
@@ -53,9 +50,6 @@ def ingest_document(file_path: str):
 
 
 def answer_question(question: str, top_k: int = 3):
-    """
-    Search FAISS and return the most relevant chunks for a question.
-    """
 
     if vector_store is None:
         raise ValueError("No documents have been uploaded yet.")
@@ -67,4 +61,14 @@ def answer_question(question: str, top_k: int = 3):
     return {
         "question": question,
         "results": results
+    }
+
+def reset_vector_store():
+
+    global vector_store
+
+    vector_store = None
+
+    return {
+        "message": "Vector store reset successfully"
     }
