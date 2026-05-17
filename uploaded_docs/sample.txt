@@ -1,0 +1,3 @@
+Employees must reset their password every 90 days.
+Employees receive 15 vacation days every year.
+All employees must complete security training annually.
