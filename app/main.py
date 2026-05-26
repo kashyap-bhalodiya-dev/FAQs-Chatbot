@@ -2,6 +2,7 @@ import os
 import shutil
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from app.qa_service import ingest_document, answer_question, reset_vector_store, answer_question_with_llm
@@ -12,6 +13,18 @@ app = FastAPI(
     title="FAQs - Chatbot",
     description="Upload documents and ask questions using FAISS-based semantic search.",
     version="1.0.0"
+)
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 class QueryRequest(BaseModel):
     question: str

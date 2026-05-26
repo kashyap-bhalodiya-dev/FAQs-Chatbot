@@ -1,6 +1,6 @@
 # FAQs Chatbot
 
-A simple semantic search system for finding answers in FAQ documents. Uses embeddings and FAISS for retrieval, and optionally feeds retrieved context into an LLM to generate cleaner answers.
+A simple semantic search system for finding answers in FAQ documents. Uses embeddings and FAISS for retrieval, and optionally feeds retrieved context into an LLM to generate cleaner answers. This repository now includes a minimal React frontend for testing and demoing the API.
 
 ## What does it do?
 
@@ -17,6 +17,7 @@ Currently supports `.txt` and `.pdf` files.
 ### Prerequisites
 - Python 3.9+
 - pip
+- Node.js (v16+) and `npm` or `pnpm` for the frontend
 
 ### Installation
 
@@ -37,12 +38,18 @@ Currently supports `.txt` and `.pdf` files.
    source venv/bin/activate
    ```
 
-3. **Install dependencies:**
+3. **Install backend dependencies:**
    ```
    pip install -r requirements.txt
    ```
 
-4. **Add LLM credentials (optional):**
+4. **Install frontend dependencies:**
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+5. **Add LLM credentials (optional):**
    - Create a `.env` file in the project root
    - Add `GEMINI_API_KEY` and optionally `GEMINI_MODEL`
    
@@ -52,7 +59,7 @@ Currently supports `.txt` and `.pdf` files.
    GEMINI_MODEL=gemini-2.5-flash
    ```
 
-## Running the API Server
+## Running the API Server (backend)
 
 Start the FastAPI server with auto-reload:
 
@@ -63,6 +70,24 @@ uvicorn app.main:app --reload
 Server runs on `http://localhost:8000`
 
 API docs available at `http://localhost:8000/docs`
+
+## Running the Frontend
+
+While the backend is running, open a second terminal and start the frontend dev server:
+
+```bash
+cd frontend
+npm run dev
+```
+
+The dev server (Vite) will typically run on `http://localhost:5173` unless configured otherwise. The frontend is a minimal React app that calls the backend endpoints for demos.
+
+To build a production frontend bundle:
+
+```bash
+cd frontend
+npm run build
+```
 
 ## API Endpoints
 
@@ -163,10 +188,12 @@ FAQs-Chatbot/
 │   ├── chunker.py            # Split text into chunks
 │   ├── embedder.py           # Generate embeddings
 │   ├── llm_service.py        # LLM prompt and answer generation
-│   ├── config.py            # App configuration and environment settings
+│   ├── config.py             # App configuration and environment settings
 │   └── vector_store.py       # FAISS vector store
+├── frontend/                 # Minimal React + Vite demo app
 ├── uploaded_docs/            # Storage for uploaded documents
 ├── test_pipeline.py          # Standalone pipeline test
 ├── requirements.txt          # Dependencies
 ```
+Note: the repository now includes a `frontend/` directory with a minimal React + Vite demo app. See the "Running the Frontend" section above for details on starting the dev server.
 

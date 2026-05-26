@@ -42,8 +42,8 @@ def generate_answer(question: str, contexts: list[dict]) -> str:
     3. Do not make assumptions.
     4. If the answer is not clearly present in the context, say:"I could not find the answer in the uploaded documents."
     5. Keep the answer concise and easy to understand.
-    6. Mention the source file name at the end.
-
+    6. Do not mention source file names in the answer. Sources will be shown separately by the application.
+    
     User Question:
     {question}
 
